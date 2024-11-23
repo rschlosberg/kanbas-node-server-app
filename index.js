@@ -5,8 +5,10 @@ import cors from "cors";
 import Hello from "./Hello.js"
 import Lab5 from "./Lab5/index.js";
 import CourseRoutes from "./Kanbas/Courses/routes.js";
-
+import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import UserRoutes from "./Kanbas/Users/routes.js";
+import AssignmentRoutes
+ from './Kanbas/Assignments/routes.js';
 const app = express()
  // make sure cors is used right after creating the app!!!
 app.use(
@@ -29,10 +31,13 @@ if (process.env.NODE_ENV !== "development") {
   };
 }
 app.use(session(sessionOptions));
-
 app.use(express.json());
+
 UserRoutes(app);
 CourseRoutes(app);
 Lab5(app)
 Hello(app)
+ModuleRoutes(app);
+AssignmentRoutes(app);
+
 app.listen(process.env.PORT || 4000)

@@ -68,6 +68,8 @@ export default function UserRoutes(app) {
         const courses = courseDao.findCoursesForEnrolledUser(userId);
         res.json(courses);
     };
+    app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+
 
 
 
@@ -78,7 +80,6 @@ export default function UserRoutes(app) {
         res.json(newCourse);
     };
 
-    app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
     app.post("/api/users/current/courses", createCourse);
     app.post("/api/users", createUser);
     app.get("/api/users", findAllUsers);
