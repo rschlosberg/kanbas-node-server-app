@@ -3,7 +3,6 @@ export default function EnrollmentRoutes(app) {
 
 app.post("/api/courses/enrollments", (req, res) => {
   const enrollment = req.body; // Expecting userId in the 
-  console.log(enrollment)
   const status = enrollmentsDao.enrollUserInCourse(enrollment);
   res.send(status);
 });
