@@ -10,11 +10,13 @@ import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import UserRoutes from "./Kanbas/Users/routes.js";
 import EnrollmentRoutes from './Kanbas/Enrollments/route.js';
 import AssignmentRoutes from './Kanbas/Assignments/routes.js';
+import QuizRoutes from './Kanbas/Quizzes/routes.js';
 
 const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas"
 mongoose.connect(CONNECTION_STRING);
 const app = express()
  // make sure cors is used right after creating the app!!!
+console.log(process.env)
 app.use(
     cors({
         credentials: true,
@@ -26,11 +28,11 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
 };
-if (process.env.NODE_ENV !== "development") {
+if (true || process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
-    sameSite: "none",
-    secure: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
@@ -44,5 +46,6 @@ Hello(app)
 ModuleRoutes(app);
 AssignmentRoutes(app);
 EnrollmentRoutes(app);
+QuizRoutes(app);
 
 app.listen(process.env.PORT || 4000)

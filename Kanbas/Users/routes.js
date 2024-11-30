@@ -38,7 +38,6 @@ export default function UserRoutes(app) {
         }
         const currentUser = await dao.createUser(req.body);
         req.session["currentUser"] = currentUser;
-        co
         res.json(currentUser);
     };
     app.post("/api/users/signup", signup);
