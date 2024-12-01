@@ -37,15 +37,14 @@ export function deleteQuiz(QuizId) {
 // QUIZ ATTEMPT MODEL
 
 // post quiz attempt
-export function createQuizAttempt(quizId, quizAttempt) {
-  delete quizAttempt._id
-  return quizAttemptModel.create(quizId)
+export function createQuizAttempt(quizAttempt) {
+  return quizAttemptModel.create(quizAttempt)
 }
 
 // get the user's most recent quiz attempt for a specific quiz
-export function getMostRecentQuizAttempt(quizId, userId) {
+export function getQuizAttempts(quizId, userId) {
   return quizAttemptModel
-    .findOne({ quiz: quizId, user: userId })
+    .find({ quiz: quizId, user: userId })
     .sort({ attempt: -1 })
     .exec();
 }

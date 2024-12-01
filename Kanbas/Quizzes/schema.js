@@ -84,6 +84,7 @@ const quizAttemptSchema = new mongoose.Schema(
                 ref: "Quiz.questions",
             },
         answer: String,
+        isCorrectAnswer: Boolean
         }
     ],
     pointsEarned: Number,

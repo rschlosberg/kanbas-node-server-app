@@ -1,6 +1,21 @@
 import * as dao from "./dao.js";
 
 export default function QuizRoutes(app) {
+    // QUIZ ATTEMPTS
+    const createQuizAttempt = async (req, res) => {
+        const quizAttempt = req.body;
+        const newQuizAttempt = await dao.createQuizAttempt(quizAttempt);
+        res.send(newQuizAttempt)
+    }
+    app.post("/api/quizzes/quizattempts", createQuizAttempt)
+
+    const getQuizAttempts = async (req, res) => {
+        const currentUser = req.session["currentUser"];
+        const { quizId } = req.params;
+        const attempts = await dao.getQuizAttempts(quizId, currentUser._id)
+        res.json(attempts);
+    }
+    app.get("/api/quizzes/:quizId/attempts", getQuizAttempts)
 
     // GET QUIZZES
 
@@ -62,6 +77,8 @@ export default function QuizRoutes(app) {
         const status = await dao.deleteQuiz(quizId);
         res.send(status);
     });
+
+
 
 
 }
