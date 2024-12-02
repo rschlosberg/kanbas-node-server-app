@@ -13,15 +13,27 @@ export function findPublishedQuizzesForCourse(courseId) {
   return quizModel.find({ course: courseId, published: true });
 }
 
+function calculateTotalPoints(quiz){
+    let totalPointsWorth = 0;
+
+    quiz.questions?.forEach((q) => {
+        totalPointsWorth += Number(q.pointsWorth) || 0;
+    })
+    return totalPointsWorth;
+}
+
 // create quiz for course
 export function createQuiz(quiz) {
-  delete quiz._id
-  return quizModel.create(quiz)
+  const newQuiz = { ...quiz };
+  newQuiz.points = calculateTotalPoints(newQuiz);
+  return quizModel.create(newQuiz)
 }
 
 // edit quiz
 export function updateQuiz(quizId, quizUpdates) {
-    return quizModel.updateOne({ _id: quizId}, quizUpdates);
+    const newQuizUpdates = { ...quizUpdates };
+    newQuizUpdates.points = calculateTotalPoints(newQuizUpdates);
+    return quizModel.updateOne({ _id: quizId}, newQuizUpdates);
 }
 
 // delete quiz
@@ -37,8 +49,34 @@ export function deleteQuiz(QuizId) {
 // QUIZ ATTEMPT MODEL
 
 // post quiz attempt
-export function createQuizAttempt(quizAttempt) {
-  return quizAttemptModel.create(quizAttempt)
+export async function createQuizAttempt(quizAttempt) {
+    const quiz = await quizModel.findById(quizAttempt.quiz);
+    let pointsEarned = 0;
+
+    quizAttempt.answers.forEach(async (answer) => {
+        const question = quiz.questions.find(
+            (q) => q._id.toString() === answer.questionId.toString()
+        );
+
+        if (question) {
+        const correctAnswers = question.correctAnswers.map((ans) => ans.toLowerCase());
+
+        if (correctAnswers.includes((answer.answer || "").toLowerCase())) {
+            pointsEarned += Number(question.pointsWorth) || 0;
+            answer.isCorrectAnswer = true;
+        } else {
+            answer.isCorrectAnswer = false;
+        }
+
+
+    } else {
+        // Handle if question not found (optional)
+        console.warn(`Question not found for answer ${answer.questionId}`);
+    }
+    })
+    quizAttempt.pointsEarned = pointsEarned;
+    const newAttempt = await quizAttemptModel.create(quizAttempt)
+    return newAttempt;
 }
 
 // get the user's most recent quiz attempt for a specific quiz

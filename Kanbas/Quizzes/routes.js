@@ -7,7 +7,7 @@ export default function QuizRoutes(app) {
         const newQuizAttempt = await dao.createQuizAttempt(quizAttempt);
         res.send(newQuizAttempt)
     }
-    app.post("/api/quizzes/quizattempts", createQuizAttempt)
+    app.post("/api/quizzes/attempts", createQuizAttempt)
 
     const getQuizAttempts = async (req, res) => {
         const currentUser = req.session["currentUser"];
