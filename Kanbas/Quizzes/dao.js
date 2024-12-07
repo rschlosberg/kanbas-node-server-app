@@ -33,7 +33,12 @@ export function createQuiz(quiz) {
 export function updateQuiz(quizId, quizUpdates) {
     const newQuizUpdates = { ...quizUpdates };
     newQuizUpdates.points = calculateTotalPoints(newQuizUpdates);
-    return quizModel.updateOne({ _id: quizId}, newQuizUpdates);
+    //return quizModel.updateOne({ _id: quizId}, newQuizUpdates);
+    return quizModel.findOneAndUpdate(
+        { _id: quizId },
+        { $set: newQuizUpdates },
+        { returnOriginal: false },
+    );
 }
 
 // delete quiz
